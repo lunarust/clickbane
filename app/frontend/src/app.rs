@@ -45,27 +45,32 @@ pub fn App() -> Html {
 
             <footer class="footer">
                 <div class="content has-text-centered">
-
+                    <img
+                        src="./ClickBane.png"
+                        alt="Clickbane"
+                        width="48"
+                        height="48"
+                        />
+                    <a href="https://bulma.io">
+                      <img
+                        src="./BulmaIcon.png"
+                        alt="Made with Bulma"
+                        width="31"
+                        height="48" />
+                    </a>
                     <a href="https://yew.rs">
                     <img
                         src="https://avatars.githubusercontent.com/u/49116234?s=48&v=4"
                         alt="Powered by Yew"
-                        width="24"
-                        height="24"
+                        width="48"
+                        height="48"
                         /></a>
-                    <a href="https://bulma.io">
-                      <img
-                        src="https://bulma.io/assets/images/made-with-bulma--semiblack.png"
-                        alt="Made with Bulma"
-                        width="128"
-                        height="24" />
-                    </a>
-                    <strong><a href="https://github.com/lunarust">
+                    <a href="https://github.com/lunarust">
                       <img
                         src="../GitHub_Invertocat_Black_Clearspace.png"
                         alt="GitHub"
-                        width="24"
-                        height="24" /></a></strong>
+                        width="48"
+                        height="48" /></a>
                 </div>
             </footer>
 

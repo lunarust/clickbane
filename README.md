@@ -1,4 +1,4 @@
-# Reporting management
+# Clickbane
 
 Clickbane is a small automation tool designed to eliminate repetitive, soul-crushing clicks when managing BI and reporting setups across environments.
 
