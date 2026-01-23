@@ -1,0 +1,63 @@
+<?xml version="1.0" encoding="UTF-8" standalone="yes"?>
+<job>
+    <baseOutputFilename>[BASEOUTPUTFILENAME]</baseOutputFilename>
+    <label>[CUSTOMERNAME] [REPORTNAME]</label>
+    <mailNotification>
+        <bccAddresses/>
+        <ccAddresses/>
+        <includingStackTraceWhenJobFails>false</includingStackTraceWhenJobFails>
+        <messageText>Good Morning,
+
+Please find attached the delegates report.
+
+If you have any questions, please do not hesitate to let us know.
+
+Thanks and regards
+
+Client Services</messageText>
+        <resultSendType>SEND_ATTACHMENT</resultSendType>
+        <skipEmptyReports>true</skipEmptyReports>
+        <skipNotificationWhenJobFails>false</skipNotificationWhenJobFails>
+        <subject>[CUSTOMERNAME] - [REPORTNAME]</subject>
+        <toAddresses>
+           [RECIPIENTS]
+        </toAddresses>
+        <version>0</version>
+    </mailNotification>
+    <outputFormats>
+        <outputFormat>PDF</outputFormat>
+    </outputFormats>
+    <outputLocale>en_US</outputLocale>
+    <outputTimeZone>UTC</outputTimeZone>
+    <repositoryDestination>
+        <folderURI>[REPORTURI]</folderURI>
+        <outputFTPInfo>
+            <implicit>true</implicit>
+            <pbsz>0</pbsz>
+            <port>21</port>
+            <propertiesMap/>
+            <type>ftp</type>
+            <userName></userName>
+        </outputFTPInfo>
+        <overwriteFiles>false</overwriteFiles>
+        <saveToRepository>false</saveToRepository>
+        <sequentialFilenames>false</sequentialFilenames>
+        <usingDefaultReportOutputFolderURI>false</usingDefaultReportOutputFolderURI>
+        <version>0</version>
+    </repositoryDestination>
+    <source>
+        <parameters>
+            <parameterValues>
+                <entry>
+                    <key>customerNumber</key>
+                    <value>
+                        <item>[CUSTOMERID]</item>
+                    </value>
+                </entry>
+            </parameterValues>
+        </parameters>
+        <reportUnitURI>[REPORTURI]</reportUnitURI>
+    </source>
+    [SCHEDULEDTRIGGER]
+    <version>0</version>
+</job>

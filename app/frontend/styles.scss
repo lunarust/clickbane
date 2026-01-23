@@ -1,0 +1,57 @@
+html,
+body {
+  font-size: 12px;
+  font-family: Noto Sans;
+  color: #595959;
+}
+p {
+    padding: 0px;
+    marging: 0px;
+}
+tr:hover{
+  color: #36454F;
+  background-color: #c8c8c8;
+  //box-shadow:0 4px 8px 0 rgba(0,0,0,0.6);
+}
+/*
+main {
+    height: 80%;
+    width: 100%;
+    overflow: auto;
+    display: block;
+    position: absolute;
+
+}
+*/
+section {
+  width: 80%;
+  display: block;
+  left: 300px;
+  top: 0px;
+}
+aside {
+  font-size: 12px;
+  overflow: auto;
+  width: 28%;
+  height: 80%;
+  overflow: auto;
+  display: block;
+}
+footer{
+  padding: 2rem 1rem 2rem !important;
+  vertical-align: middle;
+}
+.footer{
+  bottom: 0px;
+  width: 100%;
+  z-index: 0;
+}
+#details{
+  top: 80px;
+  position: absolute;
+  z-index: 10;
+  left: 30%;
+  width: 70%;
+  height: 800px;
+  display: block;
+}

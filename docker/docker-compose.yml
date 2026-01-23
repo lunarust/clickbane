@@ -1,0 +1,39 @@
+services:
+  sandbox_mysql:
+    image: mysql:latest
+    container_name: sandbox_mysql
+    ports:
+      - 3306:3306
+    restart: always
+    networks:
+      - reporting_mgmt_nw
+    environment:
+      - MYSQL_ROOT_PASSWORD=mywonderfulpassword
+#      - MYSQL_ROOT_PASSWORD_FILE=.mysql-root
+    volumes:
+      - "/opt/sandbox_data/:/var/lib/mysql"
+
+  sandbox_jasper:
+    image: judahpaul/jasperserver
+    container_name: sandbox_jasper
+    ports:
+      - 8080:8080
+    restart: always
+    networks:
+      - reporting_mgmt_nw
+    depends_on:
+      - sandbox_mysql
+    env_file: jasper.env
+    volumes:
+      - /opt/sandbox_jasper/jasper_webapp/:/usr/local/tomcat/webapps/
+      - /opt/sandbox_jasper/jasper_home/:/usr/local/share/jasperserver/
+      - /opt/sandbox_jasper/.initialized:/usr/src/jasperreports-server/.initialized:ro
+      - /opt/sandbox_jasper/jasperserver-import:/jasperserver-import
+
+networks:
+  reporting_mgmt_nw:
+    external: true
+
+volumes:
+  jasper_home:
+  jasper_webapp:
