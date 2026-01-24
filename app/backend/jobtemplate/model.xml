@@ -20,12 +20,12 @@ Client Services</messageText>
         <skipNotificationWhenJobFails>false</skipNotificationWhenJobFails>
         <subject>[CUSTOMERNAME] - [REPORTNAME]</subject>
         <toAddresses>
-           [RECIPIENTS]
+           <address>[RECIPIENTS]</address>
         </toAddresses>
         <version>0</version>
     </mailNotification>
     <outputFormats>
-        <outputFormat>PDF</outputFormat>
+        <outputFormat>XLSX_NOPAG</outputFormat>
     </outputFormats>
     <outputLocale>en_US</outputLocale>
     <outputTimeZone>UTC</outputTimeZone>
@@ -36,8 +36,9 @@ Client Services</messageText>
             <pbsz>0</pbsz>
             <port>21</port>
             <propertiesMap/>
-            <type>ftp</type>
-            <userName></userName>
+            <serverName>[SFTPHOST]</serverName>
+            <userName>[SFTPUSERNAME]</userName>
+            <password>[SFTPPASSWORD]</password>
         </outputFTPInfo>
         <overwriteFiles>false</overwriteFiles>
         <saveToRepository>false</saveToRepository>

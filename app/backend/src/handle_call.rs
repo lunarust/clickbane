@@ -91,7 +91,7 @@ pub async fn schedule_jasper_jobs_for_customer(body: CustomerJobSchedule) -> Res
 
     // Get Default Jobs
     let jsreports = sqlite_db::query_default_job().await;
-    // Schedule them
+    // Schedule themT
     let mypath = format!("{}/jobtemplate/", generic::get_current_working_dir());
     for js in jsreports.unwrap() {
         let path = Path::new(mypath.as_str());
@@ -109,8 +109,6 @@ pub async fn schedule_jasper_jobs_for_customer(body: CustomerJobSchedule) -> Res
             contents = contents.replace("[SFTPHOST]", &body.ftpHost);
 
             for p in &js.param {
-                // need to get my mapping...
-                // getting mapping
                 let map = sqlite_db::get_report_resource_mapping(p.mapped.unwrap()).await;
                 contents = contents.replace("[CUSTOMERID]", &body.customer.customerNumber.to_string());
             }
@@ -119,7 +117,10 @@ pub async fn schedule_jasper_jobs_for_customer(body: CustomerJobSchedule) -> Res
                 if js.frequency[i] == 1 {
                     let mut contents_sch = contents.replace("[REPORTNAME]", format!("{} - {}", fq_label[i], &js.label).as_str());
                     contents_sch = contents_sch.replace("[SCHEDULEDTRIGGER]", fq[i]);
-                    let _ = put_jasper_rest_api(url.clone(), jsconf.js_secret.clone(), contents_sch.clone()).await;
+                    let result = put_jasper_rest_api(url.clone(), jsconf.js_secret.clone(), contents_sch.clone()).await;
+
+                    //println!("{:?}", contents_sch);
+                    //println!("{:?}", contents_sch);
                 }
             }
         }

@@ -14,11 +14,19 @@ pub struct Customers {
     filtered_customers: Vec<Customer>,
     selected_customer: Customer,
     reload_event: i32,
+    email: String,
+    ftp_user: String,
+    ftp_password: String,
+    ftp_url: String,
 }
 pub enum Msg {
     GetCustomers(Vec<Customer>),
     FilterCustomers(String),
     SelectCustomer(Customer),
+    EditEmail(String),
+    EditFtpURL(String),
+    EditFtpUsername(String),
+    EditFtpPassword(String),
     ScheduleAll(),
     DeleteAll(),
     Done(),
@@ -35,6 +43,10 @@ impl Component for Customers {
             filtered_customers: vec![],
             selected_customer: Customer::default(),
             reload_event: 0,
+            email: "".to_string(),
+            ftp_user: "".to_string(),
+            ftp_password: "".to_string(),
+            ftp_url: "".to_string(),
         }
     }
     fn update(&mut self, ctx: &Context<Self>, msg: Self::Message) -> bool {
@@ -56,8 +68,24 @@ impl Component for Customers {
                 self.selected_customer = c;
                 true
             }
+            Msg::EditEmail(input) => {
+                self.email = input;
+                false
+            }
+            Msg::EditFtpURL(input) => {
+                self.ftp_url = input;
+                false
+            }
+            Msg::EditFtpUsername(input) => {
+                self.ftp_user = input;
+                false
+            }
+            Msg::EditFtpPassword(input) => {
+                self.ftp_password = input;
+                false
+            }
             Msg::ScheduleAll() => {
-                Self::schedule_all(self.selected_customer.clone());
+                Self::schedule_all(self.selected_customer.clone(), self.email.clone(), self.ftp_url.clone(), self.ftp_user.clone(), self.ftp_password.clone());
 
                 // Setup a delay knowing it will take some time to submit the new reports to JasperServer
                 let link = ctx.link().clone();
@@ -86,7 +114,7 @@ impl Component for Customers {
             }
         }
     }
-    fn changed(&mut self, ctx: &Context<Self>, old_props: &Self::Properties) -> bool {
+    fn changed(&mut self, _ctx: &Context<Self>, _old_props: &Self::Properties) -> bool {
         false
     }
     fn view(&self, ctx: &Context<Self>) -> Html {
@@ -99,6 +127,31 @@ impl Component for Customers {
             Msg::FilterCustomers(target.value())
         });
         let rl = self.reload_event;
+
+        let edit_email = link.callback(|e: InputEvent| {
+            let event: Event = e.dyn_into().unwrap_throw();
+            let event_target = event.target().unwrap_throw();
+            let target: HtmlInputElement = event_target.dyn_into().unwrap_throw();
+            Msg::EditEmail(target.value())
+        });
+        let edit_ftpurl = link.callback(|e: InputEvent| {
+            let event: Event = e.dyn_into().unwrap_throw();
+            let event_target = event.target().unwrap_throw();
+            let target: HtmlInputElement = event_target.dyn_into().unwrap_throw();
+            Msg::EditFtpURL(target.value())
+        });
+        let edit_ftpusername = link.callback(|e: InputEvent| {
+            let event: Event = e.dyn_into().unwrap_throw();
+            let event_target = event.target().unwrap_throw();
+            let target: HtmlInputElement = event_target.dyn_into().unwrap_throw();
+            Msg::EditFtpUsername(target.value())
+        });
+        let edit_ftppassword = link.callback(|e: InputEvent| {
+            let event: Event = e.dyn_into().unwrap_throw();
+            let event_target = event.target().unwrap_throw();
+            let target: HtmlInputElement = event_target.dyn_into().unwrap_throw();
+            Msg::EditFtpPassword(target.value())
+        });
 
         html!{
 
@@ -145,6 +198,53 @@ impl Component for Customers {
                 <p>
                     <Jobs customer={ self.selected_customer.clone() } reload={ rl } />
                 </p>
+                <hr />
+
+
+                <div class="field is-horizontal">
+                    <div class="field-label is-normal"><label class="label">{ "Email Address:" }</label></div>
+                    <div class="field-body"><div class="field"><p class="control">
+                    <input
+                        class="input is-normal"
+                        value={ self.selected_customer.clone().email }
+                        oninput={ edit_email }
+                    />
+                    </p></div></div>
+                </div>
+                <div class="field is-horizontal">
+                    <div class="field-label is-normal"><label class="label">{ "FTP URL:" }</label></div>
+                    <div class="field-body"><div class="field"><p class="control">
+                    <input
+                        placeholder="ftp url"
+                        class="input is-normal"
+                        value={ self.ftp_url.clone() }
+                        oninput={ edit_ftpurl }
+                    />
+                    </p></div></div>
+                </div>
+                <div class="field is-horizontal">
+                    <div class="field-label is-normal"><label class="label">{ "FTP Username:" }</label></div>
+                    <div class="field-body"><div class="field"><p class="control">
+                    <input
+                        placeholder="ftp username"
+                        class="input is-normal"
+                        value={ self.ftp_user.clone() }
+                        oninput={ edit_ftpusername }
+                    />
+                    </p></div></div>
+                </div>
+                <div class="field is-horizontal">
+                    <div class="field-label is-normal"><label class="label">{ "FTP Password:" }</label></div>
+                    <div class="field-body"><div class="field"><p class="control">
+                    <input
+                        placeholder="ftp password"
+                        class="input is-normal"
+                        value={ self.ftp_password.clone() }
+                        oninput={ edit_ftppassword }
+                    />
+                    </p></div></div>
+                </div>
+
                 <div class="buttons are-small">
                     <button class="button is-hovered" onclick={ctx.link().callback(move |_| Msg::ScheduleAll())}>{ " Schedule all " }</button>
                     <button class="button is-hovered" onclick={ctx.link().callback(move |_| Msg::DeleteAll())}>{ " Remove all " }</button>
@@ -177,13 +277,15 @@ impl Customers {
             link.send_message(Msg::GetCustomers(fetched_customers));
         });
     }
-    fn schedule_all(c: Customer) {
+    fn schedule_all(mut c: Customer, email: String, uri: String, user: String, pass: String) {
+
          spawn_local(async move {
+             c.email = email;
              let build_body: CustomerJobSchedule = CustomerJobSchedule {
                  customer: c.clone(),
-                 ftpHost: "".to_string(),
-                 ftpUser: "".to_string(),
-                 ftpPassword: "".to_string(),
+                 ftpHost: uri.to_string(),
+                 ftpUser: user.to_string(),
+                 ftpPassword: pass.to_string(),
              };
              let url = "http://localhost:9000/jasper/all";
              let json_body = serde_json::to_string(&build_body).expect("Some DRAMA");

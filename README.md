@@ -67,6 +67,8 @@ If your workflow involves dashboards, reports, environments, and too much manual
 - [ ] create the entire module for metabase import & export
 - [ ] Rust-Sqlite3 - trouble with simple row result, need to review later.
 - [ ] Option to select another DB, like PostgreSQL instead of MySQL
+- [ ] Set Backend URL in Frontend as environments variable
+
 
 # Configuration
 
