@@ -278,9 +278,9 @@ impl Customers {
         });
     }
     fn schedule_all(mut c: Customer, email: String, uri: String, user: String, pass: String) {
+         if email != "" { c.email = email; }
 
          spawn_local(async move {
-             c.email = email;
              let build_body: CustomerJobSchedule = CustomerJobSchedule {
                  customer: c.clone(),
                  ftpHost: uri.to_string(),

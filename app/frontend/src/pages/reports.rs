@@ -58,7 +58,7 @@ impl Component for Reports {
                 </thead>
                 <tfoot>
                 <tr>
-                    <th colspan="4">{ "Total:" }</th>
+                    <th colspan="7">{ "Total:" }</th>
                     <th>{ format!("{}", &self.reports.len()) }</th>
                 </tr>
                 </tfoot>

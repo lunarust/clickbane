@@ -14,6 +14,8 @@ pub struct Props {
 pub struct Jobs {
     jobs: Vec<JS_Scheduled_Job>,
     filtered_jobs: Vec<JS_Scheduled_Job>,
+    filter: String,
+    failed: bool,
 }
 
 pub enum Msg {
@@ -21,6 +23,7 @@ pub enum Msg {
     ReplayJob(String),
     TrashJob(i32),
     FilterJobs(String),
+    FailedJobs(),
 }
 
 impl Component for Jobs {
@@ -30,9 +33,9 @@ impl Component for Jobs {
     fn create(ctx: &Context<Self>) -> Self {
         // Initial Fetch
         Self::fetch_jobs(ctx);
-        Self { jobs: vec![], filtered_jobs: vec![] } // job_replay: "".to_string(), }
+        Self { jobs: vec![], filtered_jobs: vec![], filter: "".to_string(), failed: false }
     }
-    fn update(&mut self, _ctx: &Context<Self>, msg: Self::Message) -> bool {
+    fn update(&mut self, ctx: &Context<Self>, msg: Self::Message) -> bool {
         match msg {
             Msg::SetJobs(jobs) => {
                 // Trigger the async call
@@ -56,11 +59,30 @@ impl Component for Jobs {
                 true
             }
             Msg::FilterJobs(filter) => {
-                let js: Vec<JS_Scheduled_Job> = self.jobs.clone()
-                    .into_iter()
-                    .filter(|j| j.label.to_lowercase().contains(&filter.to_lowercase().as_str()))
-                    .collect();
+                self.filter = filter.clone();
+                let mut js: Vec<JS_Scheduled_Job> = vec![];
+                match self.failed {
+                    true =>
+                        js = self.jobs.clone()
+                            .into_iter()
+                            .filter(|j| j.label.to_lowercase().contains(&filter.to_lowercase().as_str()))
+                            .filter(|j| j.err_message != "")
+                            .collect(),
+                    _ =>
+                        js = self.jobs.clone()
+                            .into_iter()
+                            .filter(|j| j.label.to_lowercase().contains(&filter.to_lowercase().as_str()))
+                            .collect(),
+                }
                 self.filtered_jobs = js;
+
+                true
+            }
+            Msg::FailedJobs() => {
+                if self.failed { self.failed = false; }
+                else {  self.failed = true; }
+                let link = ctx.link().clone();
+                link.send_message(Msg::FilterJobs(self.filter.clone()));
                 true
             }
         }
@@ -80,14 +102,25 @@ impl Component for Jobs {
     fn view(&self, ctx: &Context<Self>) -> Html {
         let link = ctx.link();
 
+
+        let mut show_filter = false;
+        if *&self.jobs.len() > 0 { show_filter = true; }
+
+        let fltfilter = &self.filter;
+        let flttoggle = &self.failed;
+
         let oninput = link.callback(|e: InputEvent| {
             let event: Event = e.dyn_into().unwrap_throw();
             let event_target = event.target().unwrap_throw();
             let target: HtmlInputElement = event_target.dyn_into().unwrap_throw();
             Msg::FilterJobs(target.value())
         });
-        let mut show_filter = false;
-        if *&self.jobs.len() > 0 { show_filter = true; }
+
+        let ontoggle = {
+            ctx.link().callback(move |_| Msg::FailedJobs())
+        };
+
+
         html!{
             <div>
             <h1 class="title is-6">{ "Scheduled Jobs" }</h1>
@@ -95,8 +128,7 @@ impl Component for Jobs {
             <thead>
             <tr>
                 <th>
-                <div class="field is-horizontal"><div class="field-label is-normal"><label class="label">
-                {"Label"}</label></div>
+                <div class="field is-horizontal"><div class="field-label is-normal"><label class="label">{"Label"}</label></div>
                 if show_filter {
                 <div class="field-body"><div class="field"><p class="field">
                     <input
@@ -112,7 +144,18 @@ impl Component for Jobs {
                 <th>{"state"}</th>
                 <th>{"previous"}</th>
                 <th>{"next"}</th>
-                <th>{"error"}</th>
+                <th>
+                <div class="field is-horizontal"><div class="field-label is-normal"><label class="label">{"Error"}</label></div>
+                if show_filter {
+                <div class="field-body"><div class="field"><p class="field">
+                    <input type="checkbox"
+                    checked={ self.failed }
+                    onclick={ontoggle}
+                    />
+                </p></div></div>
+                }
+
+                </div></th>
                 <th>{"last failed"}</th>
                 <th>{"Replay"}</th>
                 <th>{"Trash"}</th>

@@ -40,8 +40,10 @@ pub async fn query_js_jobs_per_customer(customer: String) -> Result<Vec<JS_Sched
     let mut query = "".to_string();
     let base_query = r#"WITH logs as
         (SELECT max(occurrence_date) AS occurrence_date, message,
-        SUBSTRING_INDEX(SUBSTRING_INDEX(event_text , '\n', 1), '(', 1) as report, resource_uri
-        FROM JILogEvent je GROUP BY 2,3,4)
+        SUBSTRING_INDEX(SUBSTRING_INDEX(event_text , '\n', 1), '(', 1) as report,
+        REPLACE(SUBSTRING_INDEX(SUBSTRING_INDEX(event_text, '\n', 3), '\n', -1), 'Quartz Job: ReportJobs.', '') as report_id,
+        resource_uri
+        FROM JILogEvent je GROUP BY 2,3,4,5)
         SELECT jb.id, label, qt.job_name,
         IFNULL(jb.description, '') AS description, trigger_state,
         trigger_type, DATE_FORMAT(FROM_UNIXTIME(next_fire_time/1000), '%Y-%m-%d %T') as next_fire, IFNULL(DATE_FORMAT(FROM_UNIXTIME(prev_fire_time/1000), '%Y-%m-%d %T'), '') as prev_fire,
@@ -55,10 +57,10 @@ pub async fn query_js_jobs_per_customer(customer: String) -> Result<Vec<JS_Sched
         JOIN JIReportJob jb on id = substr(qt.job_name, 5,LENGTH(qt.job_name))
         LEFT JOIN JIReportJobMail jbm on (mail_notification = jbm.id)
         LEFT JOIN JIReportJobMailRecipient jbr ON (jbr.destination_id = jbm.id)
-        LEFT JOIN logs ON (jb.report_unit_uri = logs.resource_uri AND logs.report = CONCAT('Job: ', label))"#;
+        LEFT JOIN logs ON (jb.report_unit_uri = logs.resource_uri AND logs.report = CONCAT('Job: ', label) AND qt.job_name = logs.report_id)"#;
 
      if customer != "" {
-        query = format!("{} WHERE label LIKE CONCAT('[', '{}' ,']%') ORDER BY 1,3,4", base_query, customer);
+        query = format!("{} WHERE label LIKE CONCAT('[', '{}' ,']%') ORDER BY 1,3,4", base_query, customer.replace("'", "''"));
      }
      else  {
         query = format!("{} ORDER BY 1,3,4", base_query);
