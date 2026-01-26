@@ -4,6 +4,7 @@ use gloo_net::http::Request;
 use wasm_bindgen_futures::spawn_local;
 
 use common::*;
+use common::configuration::ConfigurationBusiness;
 
 #[function_component(ConfDisplay)]
 pub fn conf_display() -> HtmlResult {

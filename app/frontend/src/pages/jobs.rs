@@ -4,6 +4,7 @@ use wasm_bindgen::{JsCast, UnwrapThrowExt};
 use web_sys::{HtmlInputElement, InputEvent};
 use gloo_net::http::Request;
 use common::*;
+use common::jasper::{JS_Scheduled_Job,CustomerJobRequest};
 
 
 #[derive(Properties, PartialEq)]

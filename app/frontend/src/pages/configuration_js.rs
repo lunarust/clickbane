@@ -4,6 +4,7 @@ use gloo_net::http::Request;
 use wasm_bindgen_futures::spawn_local;
 //use log::info;
 use common::*;
+use common::{configuration::ConfigurationJs, configuration::ConfigurationJsRequest};
 
 #[function_component(ConfjsDisplay)]
 pub fn conf_display() -> HtmlResult {

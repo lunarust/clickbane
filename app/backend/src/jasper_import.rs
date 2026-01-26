@@ -3,7 +3,8 @@ use serde::{Deserialize, Serialize};
 use serde_xml_rs::from_str;
 use reqwest;
 use crate::sqlite_db;
-use common::*;
+use common::{configuration::ConfigurationJs};
+use common::jasper::{InputParam,JS_Report};
 
 #[allow(non_snake_case)]
 #[derive(Serialize, Deserialize, Clone, PartialEq, Debug)]
@@ -75,7 +76,7 @@ pub async fn fetch_resources() -> Vec<JS_Report> {
             .await
         ).await;
 
-        let strpr = serde_json::to_string(&pr).unwrap();
+        let _strpr = serde_json::to_string(&pr).unwrap();
 
         let tmp_report = JS_Report{
                 label: r.label,

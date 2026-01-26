@@ -189,3 +189,7 @@ SELECT contactLastName, contactFirstName, email, customerName FROM customers ord
 
 Using dummy data from:
 [MySQL Sample database](https://www.mysqltutorial.org/getting-started-with-mysql/mysql-sample-database/)
+
+
+
+ [![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)](https://opensource.org/licenses/MIT)

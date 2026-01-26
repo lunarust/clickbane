@@ -6,6 +6,7 @@ use gloo_net::http::Request;
 use gloo::timers::callback::Timeout;
 
 use common::*;
+use common::jasper::CustomerJobSchedule;
 use crate::pages::jobs::Jobs;
 
 #[derive(Properties, PartialEq)]

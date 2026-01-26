@@ -52,7 +52,7 @@ Client Services</messageText>
                 <entry>
                     <key>customerNumber</key>
                     <value>
-                        <item>[CUSTOMERID]</item>
+                        <item>[customerNumber]</item>
                     </value>
                 </entry>
             </parameterValues>

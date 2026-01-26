@@ -3,6 +3,8 @@ use mysql::prelude::*;
 use common::*;
 use crate::generic;
 
+use common::jasper::JS_Scheduled_Job;
+
 pub async fn query_customers() -> Result<Vec<Customer>> {//Result<(), Box<dyn std::error::Error>> {// Result<Vec<Customer>> {
     generic::logthis(format!("Entering query customers").as_str(), "INFO");
 

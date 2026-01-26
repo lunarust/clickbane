@@ -3,11 +3,14 @@ use std::fs;
 use std::path::Path;
 use warp::{http::StatusCode, reply::json, Reply};
 use reqwest;
-use common::*;
 use crate::mysql_db;
 use crate::sqlite_db;
 use crate::generic;
 use crate::jasper_import;
+
+use common::*;
+use common::{configuration::ConfigurationJs, configuration::ConfigurationJsRequest,configuration::ConfigurationBusiness};
+use common::jasper::{JS_Report,JS_Scheduled_Job,CustomerJobSchedule,CustomerJobRequest,InputMapping};
 
 
 // BUSINESS DB CONFIGURATION HANDLERS
@@ -109,15 +112,16 @@ pub async fn schedule_jasper_jobs_for_customer(body: CustomerJobSchedule) -> Res
             contents = contents.replace("[SFTPHOST]", &body.ftpHost);
 
             for p in &js.param {
-                let map = sqlite_db::get_report_resource_mapping(p.mapped.unwrap()).await;
-                contents = contents.replace("[CUSTOMERID]", &body.customer.customerNumber.to_string());
-            }
+                let map: Vec<InputMapping> = sqlite_db::get_report_resource_mapping(p.mapped.unwrap()).await.unwrap();
+                for m in map {
+                    contents = contents.replace(format!("[{}]", m.input_id).as_str(), &body.customer.customerNumber.to_string());
+            }}
 
             for i in 0..3 {
                 if js.frequency[i] == 1 {
                     let mut contents_sch = contents.replace("[REPORTNAME]", format!("{} - {}", fq_label[i], &js.label).as_str());
                     contents_sch = contents_sch.replace("[SCHEDULEDTRIGGER]", fq[i]);
-                    let result = put_jasper_rest_api(url.clone(), jsconf.js_secret.clone(), contents_sch.clone()).await;
+                    let _result = put_jasper_rest_api(url.clone(), jsconf.js_secret.clone(), contents_sch.clone()).await;
 
                     //println!("{:?}", contents_sch);
                     //println!("{:?}", contents_sch);

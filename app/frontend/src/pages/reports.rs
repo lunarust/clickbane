@@ -2,7 +2,7 @@ use yew::prelude::*;
 use wasm_bindgen_futures::spawn_local;
 use gloo_net::http::Request;
 use common::*;
-
+use common::jasper::{JS_Report,InputParam};
 pub struct Reports {
     reports: Vec<JS_Report>,
 }

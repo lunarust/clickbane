@@ -1,15 +1,11 @@
 use rusqlite::{Connection, Result, params};
-use rusqlite::types::Value;
-use std::str::FromStr;
-use serde::Serialize;
-use common::*;
+
+use common::configuration::{ConfigurationJs, ConfigurationJsRequest,ConfigurationBusiness};
+use common::jasper::{JS_Report,InputMapping};
+
 use crate::generic;
 
-#[derive(Serialize, Clone, PartialEq, Debug)]
-struct Boo {
-    schedule: String,
-    frequency: Vec<u32>,
-}
+
 #[derive(Clone, Debug)]
 struct Mapped {
     id: i32,
