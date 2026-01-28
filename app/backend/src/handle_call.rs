@@ -173,22 +173,43 @@ pub async fn replay_jasper_job(job_name: String) -> Result<impl Reply, warp::Rej
 
     Ok(StatusCode::OK)
 }
-pub async fn fetch_all_jasper_reports() -> Result<impl Reply, warp::Rejection> {
-    generic::logthis(format!("JASPER, Fetch all reports").as_str(), "INFO");
-    let rep: Vec<JS_Report> = jasper_import::fetch_resources().await;
+pub async fn sync_jasper_reports() -> Result<impl Reply, warp::Rejection> {
+    generic::logthis(format!("JASPER, Sync all reports").as_str(), "INFO");
+    let rep: Vec<JS_Report> = jasper_import::sync_resources().await;
     //Ok(StatusCode::OK)
     Ok(json::<Vec<_>>(
         &rep,
     ))
 }
+pub async fn fetch_all_jasper_reports() -> Result<impl Reply, warp::Rejection> {
+    generic::logthis(format!("JASPER, Fetch all reports").as_str(), "INFO");
+    let rep: Vec<JS_Report> = sqlite_db::get_reports_scheduled().await.unwrap();
+    //Ok(StatusCode::OK)
+    Ok(json::<Vec<_>>(
+        &rep,
+    ))
+}
+
 pub async fn set_report_default(jsr: JS_Report) -> Result<impl Reply, warp::Rejection> {
+        generic::logthis(format!("SQLITE: set_report_default: {:?}", jsr).as_str(), "INFO");
+        /*
+    match jsr.default {
+        true => { jsr.default = false; }
+        _ => { jsr.default = true; }
+    }
+    */
     let _ = sqlite_db::insert_report(jsr)
-    .await;
+        .await;
 
     Ok(StatusCode::OK)
 }
 
+pub async fn set_report_freq(jsr: JS_Report) -> Result<impl Reply, warp::Rejection> {
+    let _ = sqlite_db::insert_report(jsr)
+        .await;
 
+    Ok(StatusCode::OK)
+}
 async fn delete_jasper_rest_api(url: String, secret: String) ->  Result<impl Reply, warp::Rejection> {
     let client = reqwest::Client::new();
     let _ = client

@@ -33,6 +33,7 @@ async fn main() {
     let jasper_replay_job = warp::path!("jasper" / "replay" / String);
     let jasper_remove_job = warp::path!("jasper" / i32);
     let jasper_fetch_all_report = warp::path!("jasper" / "fetch");
+    let jasper_sync_report = warp::path!("jasper" / "sync");
     let jasper_set_report_default = warp::path!("jasper" / "default");
     let jasper_change_report_frequency = warp::path!("jasper" / "frequency");
     let jasper_delete_all_reports = warp::path!("jasper" / "remove");
@@ -58,6 +59,9 @@ async fn main() {
         .or(jasper_fetch_all_report
             .and(warp::get())
             .and_then(handle_call::fetch_all_jasper_reports))
+        .or(jasper_sync_report
+            .and(warp::get())
+            .and_then(handle_call::sync_jasper_reports))
         .or(jasper_set_report_default
             .and(warp::post())
             .and(warp::body::json())
@@ -65,7 +69,7 @@ async fn main() {
         .or(jasper_change_report_frequency
             .and(warp::post())
             .and(warp::body::json())
-            .and_then(handle_call::set_report_default)
+            .and_then(handle_call::set_report_freq)
         );
 
 

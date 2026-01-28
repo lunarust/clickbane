@@ -39,7 +39,7 @@ pub async fn insert_report(jsr: JS_Report) -> Result<()> {
     //if jsr.default { ch = false; }
     let frequency: u32 = jsr.frequency[0]*100 + jsr.frequency[1]*10 + jsr.frequency[2];
 
-    println!("INSERT FREQUENCY {:?} FOR {:?}", frequency, jsr);
+    //println!(">>>INSERT REPORT {:?} FOR {:?}", frequency, jsr);
 
     conn.execute(
         "INSERT INTO jasper_jobs (label, description, uri, param, schedule, frequency)
@@ -93,6 +93,42 @@ pub async fn query_default_job() -> Result<Vec<JS_Report>> {
         reps.push(res?);
     }
     Ok(reps.clone())
+}
+pub async fn get_reports_scheduled() -> Result<Vec<JS_Report>> {
+    let url = format!("{}/configuration.db", generic::get_current_working_dir());
+    let conn = Connection::open(url)?;
+    let mut stmt = conn.prepare("SELECT label, description, uri,
+        param,
+        ifnull(schedule, 'false') as 'default', ifnull(frequency , 0) as frequency
+        FROM jasper_jobs")?;
+
+    let rw = stmt.query_map([], |row| {
+       let param_json: String = row.get(3)?;
+       let f: i32 = row.get(5)?;
+       let freq: String =  format!("{:03}", f);
+       let s: String = row.get(4)?;
+       let sc: bool =
+            match s.as_str() {
+                "true" => true,
+                _ => false,
+            };
+
+       Ok(
+            JS_Report {
+                label: row.get(0)?,
+                description: row.get(1)?,
+                uri: row.get(2)?,
+                param: serde_json::from_str(&param_json).expect("DRAMA"),
+                default: sc,
+                frequency: freq.chars().flat_map(|ch| ch.to_digit(10)).collect(),
+        })
+    })?;
+    let mut reps: Vec<JS_Report> = vec![];
+
+    for a in rw {
+        reps.push(a?);
+    }
+    Ok(reps)
 }
 pub async fn get_report_scheduled(jsf: JS_Report) -> Result<JS_Report> {
     let url = format!("{}/configuration.db", generic::get_current_working_dir());

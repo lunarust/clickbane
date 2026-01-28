@@ -57,7 +57,7 @@ struct State {
 }
 
 
-pub async fn fetch_resources() -> Vec<JS_Report> {
+pub async fn sync_resources() -> Vec<JS_Report> {
 
     // Get Jasper Server Configuration
     let jsconf: ConfigurationJs = sqlite_db::query_js_configuration().await.unwrap();
@@ -67,7 +67,6 @@ pub async fn fetch_resources() -> Vec<JS_Report> {
     let rep = call_api(url, &jsconf.js_secret).await;
 
     let res: Resources = from_str(&rep).unwrap();
-    //println!(">> {:?}", res);
     let mut output: Vec<JS_Report> = vec![];
     for r in res.resourceLookup {
         let param_url = format!("{}/reports{}/inputControls", jsconf.js_url, r.uri);
@@ -89,6 +88,8 @@ pub async fn fetch_resources() -> Vec<JS_Report> {
 
 
         let my_report: JS_Report = sqlite_db::get_report_scheduled(tmp_report).await.unwrap();
+        //println!(">> {:?}", my_report);
+        let _ = sqlite_db::insert_report(my_report.clone()).await;
         output.push(my_report)
     }
     output
