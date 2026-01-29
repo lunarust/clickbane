@@ -23,40 +23,6 @@ A lightweight web UI to keep things visible and controllable
 
 If your workflow involves dashboards, reports, environments, and too much manual configuration — Clickbane is here to slay that pain.
 
-```
-├── bi_management
-│   ├── backend
-│   │   ├── Cargo.toml
-│   │   ├── configuration.db
-│   │   ├── jobtemplate
-│   │   ├── makefile
-│   │   ├── src
-│   │   └── target
-│   ├── common
-│   │   ├── Cargo.toml
-│   │   └── src
-│   └── frontend
-│       ├── Cargo.toml
-│       ├── dist
-│       ├── GitHub_Invertocat_Black_Clearspace.png
-│       ├── index.html
-│       ├── src
-│       ├── styles.scss
-│       ├── target
-│       └── Trunk.toml
-├── docker
-│   ├── docker-compose.yml
-│   ├── docker-entrypoint-initdb.d
-│   │   └── 001_mysqlsampledatabase.sql
-│   ├── dockerfile_backend
-│   ├── jasper.env
-│   └── jasperserver-import
-├── JasperServer.md
-└── README.md
-
-```
-
-
 
 # TODO & Issues:
 - [x] Filter on scheduled jobs page
@@ -68,6 +34,18 @@ If your workflow involves dashboards, reports, environments, and too much manual
 - [ ] Rust-Sqlite3 - trouble with simple row result, need to review later.
 - [ ] Option to select another DB, like PostgreSQL instead of MySQL
 - [ ] Set Backend URL in Frontend as environments variable
+
+/*
+onchange={Callback::from({
+    let mut w = word.clone();
+    let on_change = on_change.clone();
+    move |e: Event| {
+        let input = e.target_dyn_into::<HtmlInputElement>().unwrap();
+        w.gender.female = input.checked();
+        on_change.emit(w.clone());
+    }
+})}
+*/
 
 
 # Configuration

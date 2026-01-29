@@ -1,5 +1,7 @@
 use yew::prelude::*;
 use wasm_bindgen_futures::spawn_local;
+use web_sys::HtmlInputElement;
+
 use gloo_net::http::Request;
 use gloo::timers::callback::Timeout;
 use common::*;
@@ -15,7 +17,7 @@ pub enum Msg {
     SetDefault(JS_Report),
     FilterReports(),
     FetchJobs(Vec<JS_Report>),
-    ChangeFrequency(JS_Report),
+    ChangeFrequency(JS_Report, Vec<JS_Report>),
     SyncReport(),
     Done(),
 }
@@ -34,9 +36,10 @@ impl Component for Reports {
                 Self::set_default(r);
                 false
             }
-            Msg::ChangeFrequency(r) => {
+            Msg::ChangeFrequency(r, rlist) => {
                 Self::set_frequency(r);
-                false
+                self.filtered_reports = rlist;
+                true
             }
             Msg::FetchJobs(reports) => {
                 self.reports = reports.clone();
@@ -81,6 +84,8 @@ impl Component for Reports {
             ctx.link().callback(move |_| Msg::FilterReports())
         };
 
+        let my_reports: Vec<JS_Report> = self.filtered_reports.clone();
+
         html!{
             <div>
             <aside class="menu">
@@ -92,8 +97,7 @@ impl Component for Reports {
             <div class="card">
               <header class="card-header">
                 <p class="card-header-title">{ " Reports " }</p>
-                //<h1 class="title is-4">{ " Reports " }</h1>
-                </header>
+              </header>
                 <div class="card-content">
                 <table class="table">
                 <thead>
@@ -123,7 +127,7 @@ impl Component for Reports {
                 </tr>
                 </tfoot>
                 <tbody>
-                    for rep in &*self.filtered_reports {
+                    for (idx, rep) in my_reports.iter().enumerate() {
                         <tr key={ rep.uri.clone() }>
                             <td>{ &rep.label }</td>
                             <td>{ &rep.description }</td>
@@ -140,12 +144,12 @@ impl Component for Reports {
                                 <label class="checkbox">
                                 <input type="checkbox" checked={rep.default}
                                     onchange={
-                                        let mut report_checked = rep.clone();
-                                        report_checked.default = match rep.default {
-                                            true => false,
-                                            _ => true, };
-                                        ctx.link().callback(move |_| Msg::SetDefault(report_checked.clone()))
-                                    }
+                                    let mut report_checked = rep.clone();
+                                    ctx.link().callback(move| e: Event| {
+                                        let mut r = report_checked.clone();
+                                        r.default = e.target_dyn_into::<HtmlInputElement>().unwrap().checked();
+                                        Msg::SetDefault(r)
+                                        })}
                                 />
                                 </label>
                             </td>
@@ -156,14 +160,22 @@ impl Component for Reports {
                                         1 => true,
                                         _ => false
                                     }}
+
                                     onchange={
-                                            let mut rc = rep.clone();
-                                            rc.frequency[0] = match rep.frequency[0] {
-                                                1 => 0,
-                                                _ => 1,
+                                    let report_checked = rep.clone();
+                                    let report_list = my_reports.clone();
+                                    ctx.link().callback(move| e: Event| {
+                                        let mut r = report_checked.clone();
+                                        r.frequency[0] =
+                                            match e.target_dyn_into::<HtmlInputElement>().unwrap().checked() {
+                                                 false => 0,
+                                                 _ => 1,
                                             };
-                                            ctx.link().callback(move |_| Msg::ChangeFrequency(rc.clone()))
-                                    }
+                                        let mut v = report_list.clone();
+                                        v[idx] = r.clone();
+                                        Msg::ChangeFrequency(r, v)
+                                        })}
+
                                 />
                                 </label>
                             </td>
@@ -175,13 +187,19 @@ impl Component for Reports {
                                         _ => false
                                     }}
                                     onchange={
-                                            let mut rc = rep.clone();
-                                            rc.frequency[1] = match rep.frequency[1] {
-                                                1 => 0,
-                                                _ => 1,
+                                    let report_checked = rep.clone();
+                                    let report_list = my_reports.clone();
+                                    ctx.link().callback(move| e: Event| {
+                                        let mut r = report_checked.clone();
+                                        r.frequency[1] =
+                                            match e.target_dyn_into::<HtmlInputElement>().unwrap().checked() {
+                                                 false => 0,
+                                                 _ => 1,
                                             };
-                                            ctx.link().callback(move |_| Msg::ChangeFrequency(rc.clone()))
-                                    }
+                                        let mut v = report_list.clone();
+                                        v[idx] = r.clone();
+                                        Msg::ChangeFrequency(r, v)
+                                        })}
                                 />
                                 </label>
                             </td>
@@ -192,14 +210,21 @@ impl Component for Reports {
                                         1 => true,
                                         _ => false
                                     }}
+
                                     onchange={
-                                            let mut rc = rep.clone();
-                                            rc.frequency[2] = match rep.frequency[2] {
-                                                1 => 0,
-                                                _ => 1,
+                                    let report_checked = rep.clone();
+                                    let report_list = my_reports.clone();
+                                    ctx.link().callback(move| e: Event| {
+                                        let mut r = report_checked.clone();
+                                        r.frequency[2] =
+                                            match e.target_dyn_into::<HtmlInputElement>().unwrap().checked() {
+                                                 false => 0,
+                                                 _ => 1,
                                             };
-                                            ctx.link().callback(move |_| Msg::ChangeFrequency(rc.clone()))
-                                    }
+                                        let mut v = report_list.clone();
+                                        v[idx] = r.clone();
+                                        Msg::ChangeFrequency(r, v)
+                                        })}
                                 />
                                 </label>
                             </td>
