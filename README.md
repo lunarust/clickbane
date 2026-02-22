@@ -34,18 +34,8 @@ If your workflow involves dashboards, reports, environments, and too much manual
 - [ ] Rust-Sqlite3 - trouble with simple row result, need to review later.
 - [ ] Option to select another DB, like PostgreSQL instead of MySQL
 - [ ] Set Backend URL in Frontend as environments variable
+- [ ] Add import / export option for JasperServer
 
-/*
-onchange={Callback::from({
-    let mut w = word.clone();
-    let on_change = on_change.clone();
-    move |e: Event| {
-        let input = e.target_dyn_into::<HtmlInputElement>().unwrap();
-        w.gender.female = input.checked();
-        on_change.emit(w.clone());
-    }
-})}
-*/
 
 
 # Configuration
