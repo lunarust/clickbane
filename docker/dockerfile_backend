@@ -1,1 +1,4 @@
-sudo dnf install sqlite-devel
+FROM rust:latest AS runtime
+COPY ../target/release/backend ./
+EXPOSE 9000
+ENTRYPOINT ["./backend", "start"]
