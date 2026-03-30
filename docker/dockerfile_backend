@@ -1,4 +1,4 @@
 FROM rust:latest AS runtime
-COPY ../app/backend/target/release/ ./
+COPY ../app/backend/target/release/backend ./
 EXPOSE 9000
 ENTRYPOINT ["./backend", "start"]
