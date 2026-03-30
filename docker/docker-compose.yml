@@ -4,7 +4,6 @@ services:
     container_name: sandbox_mysql
     ports:
       - 3306:3306
-    restart: always
     networks:
       - reporting_mgmt_nw
     environment:
@@ -18,7 +17,6 @@ services:
     container_name: sandbox_jasper
     ports:
       - 8080:8080
-    restart: always
     networks:
       - reporting_mgmt_nw
     depends_on:

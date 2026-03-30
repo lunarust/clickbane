@@ -14,6 +14,12 @@ Running JasperServer Community Edition in a container for this sandbox (see dock
 [Manually add maria db driver](https://repo1.maven.org/maven2/org/mariadb/jdbc/mariadb-java-client/2.5.3/)
 Note, newer drivers won't work.
 
+
+## Export
+docker exec -it sandbox_jasper /usr/src/jasperreports-server/buildomatic/js-export.sh  --everything --output-zip ./$DATE.zip
+
+not working on this docker install...
+
 ## Rest API
 
 - list reports
