@@ -44,35 +44,56 @@ pub fn App() -> Html {
             </main>
 
             <footer class="footer">
-                <div class="content has-text-centered">
+                <div class="content has-text-right">
+
+                    <span class="footer_icon"><a href="https://yew.rs">
                     <img
-                        src="./ClickBane.png"
-                        alt="Clickbane"
-                        width="48"
-                        height="48"
-                        />
-                    <a href="https://bulma.io">
-                      <img
-                        src="./BulmaIcon.png"
-                        alt="Made with Bulma"
-                        width="31"
-                        height="48" />
-                    </a>
-                    <a href="https://yew.rs">
-                    <img
-                        src="https://avatars.githubusercontent.com/u/49116234?s=48&v=4"
+                        src="./resources/yewstack.png"
                         alt="Powered by Yew"
-                        width="48"
-                        height="48"
-                        /></a>
-                    <a href="https://github.com/lunarust">
+                        width="24"
+                        height="24"
+                        /></a></span>
+
+                    <span class="footer_icon"><a href="https://rust-lang.org/">
+                    <img
+                        src="./resources/rust-logo-512x512-blk.png"
+                        alt="Powered by Yew"
+                        width="24"
+                        height="24"
+                        /></a></span>
+
+                    <span class="footer_icon"><a href="https://github.com/lunarust/clickbane">
                       <img
-                        src="../GitHub_Invertocat_Black_Clearspace.png"
+                        src="./resources/GitHub_Invertocat_Black_Clearspace.png"
                         alt="GitHub"
-                        width="48"
-                        height="48" /></a>
+                        width="24"
+                        height="24" /></a></span>
+
+                    <span class="footer_icon"><a href="https://bulma.io">
+                      <img
+                        src="./resources/BulmaIcon.png"
+                        alt="Made with Bulma"
+                        width="15"
+                        height="24" />
+                    </a></span>
+
+                    <span class="footer_icon">
+                      <img
+                        src="./resources/logo.svg"
+                        alt="Kappa"
+                        width="30"
+                        height="28" /></span>
                 </div>
             </footer>
+
+            <div id="logo">
+            <span class="footer_logo">
+              <img
+                src="./resources/ClickBane.png"
+                alt="ClickBane"
+                width="75"
+                height="68" /></span>
+            </div>
 
         </BrowserRouter>
     }
